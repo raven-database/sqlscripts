@@ -16,7 +16,7 @@ my (%SNP, %GEN, %VAR, %IND);
 # - - - - - - - - - - - - - - - - M A I N  W O R K F L O W - - - - - - - - - - - - - -
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #TABLE COLUMNS
-$syntax = "select species Species, format(sum(genes),0) Genes, format(sum(total_VARIANTS ),0) Variants from vw_libraryinfo group by species";
+$syntax = "select species Species, format(sum(genes),0) Genes, format(sum(total_VARIANTS ),0) Variants from vw_libmetadata group by species";
 
 $sth = $dbh->prepare($syntax);
 $sth->execute or die "SQL Error: $DBI::errstr\n";
@@ -37,7 +37,7 @@ foreach my $first (sort {$a cmp $b} keys %GEN){
             <td class=\"summary\">$VAR{$first}</td></tr>\n";
 }
 #Final Row
-$syntax = "select format(sum(genes),0) Genes, format(sum(total_VARIANTS ),0) Variants from vw_libraryinfo";
+$syntax = "select format(sum(genes),0) Genes, format(sum(totalVARIANTS ),0) Variants from vw_libmetadata";
 $sth = $dbh->prepare($syntax);
 $sth->execute or die "SQL Error: $DBI::errstr\n";
 while (my ($genes, $variants) = $sth->fetchrow_array() ) {

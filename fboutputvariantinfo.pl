@@ -91,13 +91,13 @@ print OUTDOWN "Line\tChrom\tPosition\tRef\tAlt\tClass\tAnnotation\tGene Name\tdb
 if ($species =~ /gallus/) {
   $ibis = "/home/modupe/.bin/bin/ibis -d $chickenpath -q \"";
   if ($chrom) {
-    $syntax = "select line,chrom,position,ref,alt,class,consequence,
-                genename,dbsnp,group_concat(library) where chrom = \'$chrom\' and position between $begin and $end";
+    $syntax = "select line,chrom,position,refallele,altallele,variantclass,consequence,
+                genename,existingvariant,group_concat(libraryid) where chrom = \'$chrom\' and position between $begin and $end";
   }
   elsif($gene) {
 		my @genes = split(",",$gene);
-		$syntax = "select line, chrom,position, ref, alt, class, consequence,
-                genename, dbsnp,group_concat(library) where (";
+		$syntax = "select line, chrom,position, refallele, altallele, variantclass, consequence,
+                genename,existingvariant,group_concat(libraryid) where (";
 		foreach (@genes){
 			$syntax .= "genename = '$_' OR ";
 		}
@@ -231,12 +231,12 @@ else {
   if ($species =~ /mus_musculus/) {$ibis = "ibis -d $mousepath -q \"";}
   elsif ($species =~ /alligator/) {$ibis = "ibis -d $alligatorpath -q \"";}
   if ($chrom) {
-    $syntax = "select chrom,position,ref,alt,class,consequence,
-                genename,dbsnp,group_concat(library) where chrom = \'$chrom\' and position between $begin and $end\" -v -o ";
+    $syntax = "select chrom,position,refallele,altallele,variantclass,consequence,
+                genename,existingvariant,group_concat(libraryid) where chrom = \'$chrom\' and position between $begin and $end\" -v -o ";
   }
   elsif($gene) {
-    $syntax = "select chrom,position,ref,alt,class,consequence,
-                genename, dbsnp,group_concat(library) where genename = \'$gene\'\" -v -o ";
+    $syntax = "select chrom,position,refallele,altallele,variantclass,consequence,
+                genename,existingvariant,group_concat(libraryid) where genename = \'$gene\'\" -v -o ";
   }
   print "$ibis$syntax$tempoutput\n\n";
   `$ibis$syntax$tempoutput`;

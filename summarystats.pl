@@ -16,7 +16,7 @@ my (%PRO, %KEY);
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #TABLE COLUMNS
 $syntax = "select a.species Species, format(count(a.species),0) Recorded, format(count(b.species),0) Processed
-            from bird_libraries a left outer join vw_libraryinfo b on a.library_id = b.library_id
+            from BirdLibraries a left outer join vw_libmetadata b on a.libraryid = b.libraryid
             group by a.species";
 
 $sth = $dbh->prepare($syntax);
@@ -38,8 +38,8 @@ foreach my $first (sort {$a cmp $b} keys %KEY){
             <td class=\"summary\">$PRO{$first}</td></tr>\n";
 }
 #Final Row
-$syntax = "select format(count(a.species),0) Recorded, format(count(b.species),0) Processed from bird_libraries a left outer join vw_libraryinfo b
-            on a.library_id = b.library_id";
+$syntax = "select format(count(a.species),0) Recorded, format(count(b.species),0) Processed from BirdLibraries a left outer join vw_libmetadata b
+            on a.libraryid = b.libraryid";
 $sth = $dbh->prepare($syntax);
 $sth->execute or die "SQL Error: $DBI::errstr\n";
 while (my ($recorded, $processed) = $sth->fetchrow_array() ) {

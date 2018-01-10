@@ -12,8 +12,8 @@ use routine;
 
 chdir "/home/modupe/public_html/atlas/OUTPUT";
 #ARGUMENTS
-my($specifics,$output1, $ibis);
-GetOptions("1|a|in|in1|list=s"=>\$specifics,"2|b|out1|output1=s"=>\$output1);
+my($specifics,$output1, $ibis, $expression);
+GetOptions("1|a|in|in1|list=s"=>\$specifics,"2|b|out1|output1=s"=>\$output1,"3|expression=s"=>\$expression);
 
 #my ($dbh, $sth, $syntax, @row);
 our ($VERSION, $DATE, $AUTHOR) = DEFAULTS();
@@ -45,9 +45,9 @@ close(OUT);
 #TABLE COLUMNS
 foreach (@headers){
 	my $filenamearray = "$output1.v1,$output1.v2,$output1.v3";
-	$ibis = "/home/modupe/.bin/bin/ibis -d $chickengenes -q 'select genename, fpkm, library, chrom, chromstart, chromstop where library = $_ order by genename, chrom, chromstart' -v -o $output1.v1"; `$ibis`;
-	$ibis = "/home/modupe/.bin/bin/ibis -d $mousegenes -q 'select genename, fpkm, library, chrom, chromstart, chromstop where library = $_' -v -o $output1.v2"; `$ibis`;
-	$ibis = "/home/modupe/.bin/bin/ibis -d $alligatorgenes -q 'select genename, fpkm, library, chrom, chromstart, chromstop where library = $_' -v -o $output1.v3"; `$ibis`;
+	$ibis = "/home/modupe/.bin/bin/ibis -d $chickengenes -q 'select genename, $expression, libraryid, chrom, chromstart, chromstop where libraryid = $_ order by genename, chrom, chromstart' -v -o $output1.v1"; `$ibis`;
+	$ibis = "/home/modupe/.bin/bin/ibis -d $mousegenes -q 'select genename, $expression, libraryid, chrom, chromstart, chromstop where libraryid = $_' -v -o $output1.v2"; `$ibis`;
+	$ibis = "/home/modupe/.bin/bin/ibis -d $alligatorgenes -q 'select genename, $expression, libraryid, chrom, chromstart, chromstop where libraryid = $_' -v -o $output1.v3"; `$ibis`;
 
 	foreach my $filename (split(",", $filenamearray)){
 		open (IN, "<", $filename);

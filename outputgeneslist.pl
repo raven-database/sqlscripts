@@ -8,10 +8,10 @@ use passw;
 use routine;
 
 #ARGUMENTS
-my($gene,$tissue,$species,$specs);
+my($gene,$tissue,$species,$specs, $expression);
 my ($col1, $col2, $col3, $output);
 my ($ibis, $syntax);
-GetOptions("1|gene=s"=>\$gene,"2|tissue=s"=>\$tissue,"3|species=s"=>\$species, "output|o=s"=>\$output, "col1=s"=>\$col1,"col2=s"=>\$col2,"col3=s"=>\$col3);
+GetOptions("1|gene=s"=>\$gene,"2|tissue=s"=>\$tissue,"3|species=s"=>\$species, "4|expression=s"=>\$expression, "output|o=s"=>\$output, "col1=s"=>\$col1,"col2=s"=>\$col2,"col3=s"=>\$col3);
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # - - - - - - - - - - - - G L O B A L  V A R I A B L E S- - - - - - - - - - - - - -
@@ -43,7 +43,7 @@ foreach my $ftissue (@tissue){
 			die "Error in input options\n";
 		}
 		$ftissue = uc($ftissue);
-		$syntax = "select genename, line, max(fpkm), avg(fpkm), min(fpkm) where tissue = \"$ftissue\" and genename = \"$fgene\"' -v -o $output.v1";
+		$syntax = "select genename, line, max($expression), avg($expression), min($expression) where tissue = \"$ftissue\" and genename = \"$fgene\"' -v -o $output.v1";
 		
 		#print $syntax,"\n";
 		`$ibis$syntax `;
@@ -100,30 +100,17 @@ print "
                 <th class=\"gened\">$THESYNTAX[0]</th>
                 <th class=\"gened\">$THESYNTAX[1]</th>
                 <th class=\"gened\">$THESYNTAX[2]</th>
-                <th class=\"gened\">Maximum Fpkm</th>
-                <th class=\"gened\">Average Fpkm</th>
-                <th class=\"gened\">Minimum Fpkm</th>
+                <th class=\"gened\">Maximum ".uc($expression)."</th>
+                <th class=\"gened\">Average ".uc($expression)."</th>
+                <th class=\"gened\">Minimum ".uc($expression)."</th>
         </tr>\n";
 
 open (OUT, ">$output.txt");
-#open (OUT2, ">$output.oot");
-print OUT "$THESYNTAX[0]\t$THESYNTAX[1]\t$THESYNTAX[2]\tMaximum Fpkm\tAverage Fpkm\tMinimum Fpkm\n";
+print OUT "$THESYNTAX[0]\t$THESYNTAX[1]\t$THESYNTAX[2]\tMaximum ".uc($expression)."\tAverage ".uc($expression)."\tMinimum ".uc($expression)."\n";
 
-#print OUT2 "
-#<table class=\"gened\" border=\"1\">
-#        <tr>
-#                <th class=\"gened\">$THESYNTAX[0]</th>
-#                <th class=\"gened\">$THESYNTAX[1]</th>
-#                <th class=\"gened\">$THESYNTAX[2]</th>
-#                <th class=\"gened\">Maximum Fpkm</th>
-#                <th class=\"gened\">Average Fpkm</th>
-#                <th class=\"gened\">Minimum Fpkm</th>
-#        </tr>\n";
-				
+			
 foreach my $column1 (sort keys %GENES){
 print "\t<tr>\n\t\t<td class=\"gened\" rowspan=\"$COUNT{$column1}\">$column1</td>\n";
-
-#print OUT2 "\t<tr>\n\t\t<td class=\"gened\" rowspan=\"$COUNT{$column1}\">$column1</td>\n";
 
         my $count = scalar keys(%{$GENES{$column1}});
         my $I = $count;
@@ -132,8 +119,7 @@ print "\t<tr>\n\t\t<td class=\"gened\" rowspan=\"$COUNT{$column1}\">$column1</td
                 my $countsec = scalar keys(%{$GENES{$column1}{$column2}});
 print "\t\t<td class=\"gened\" rowspan=\"$countsec\">$column2</td>\n";
 
-#print OUT2 "\t\t<td class=\"gened\" rowspan=\"$countsec\">$column2</td>\n";
-                my $J = $countsec;
+               my $J = $countsec;
                 foreach my $column3 (sort keys %{$GENES{$column1}{$column2}}){
                         unless ($J <= 0 || $J == $countsec) { print "\n\t<tr>\n";}
                         print "\t\t<td class=\"gened\">$column3</td>\n";
@@ -143,11 +129,7 @@ print "\t       <td class=\"gened\">$all[0]</td>
                 <td class=\"gened\">$all[1]</td>
                 <td class=\"gened\">$all[2]</td>
         </tr>\n";
-				
-#print OUT2 "\t       <td class=\"gened\">$all[0]</td>
-#                <td class=\"gened\">$all[1]</td>
-#                <td class=\"gened\">$all[2]</td>
-#        </tr>\n";
+
                 $I--;$J--;
                 }
         }
